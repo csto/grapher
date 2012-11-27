@@ -1,0 +1,8 @@
+Change the color
+
+.line-0{
+  stroke:red !important;
+}
+.grapher-circle-0, .grapher-label-0{
+  fill:red !important;
+}
