@@ -200,7 +200,8 @@ Graph.LineGraph = function(data, labels, options) {
 
     $(self.div).mousemove(function(e){
       if (!self.paused){
-        self.xPos = e.pageX - this.offsetLeft;
+        self.xPos = e.pageX - $(this).offset().left;
+        console.log (self.xPos);
 
         for(var i=0; i<self.data[0].length; i++){
           if(self.xPos >= self.x(new Date(data[0][i].x)) - self.realx(1/2) && (self.data[0].length == i+1 || self.xPos < self.x(new Date(data[0][(i+1)].x)) - self.realx(1/2))){

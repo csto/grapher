@@ -1,13 +1,12 @@
 
-
-<div>
+<div class='box'>
 	<%= graph("day", :class => 'test', :interpolate => "step-before", :xinterval => 20, :yinterval => 2) do |g| %>
 		<% g.line(User, :column => :created_at, :label => "Update", :color => 'green') %>
 		<% g.line(User, :column => :updated_at, :label => "Average"){|r| r.average(:value)} %>
 	<% end %>
 </div>
 
-<div>
+<div class='box'>
 	<%= graph("day") do |g| %>
 		<% g.line(User, :column => :created_at, :label => "Update") %>
 	<% end %>
