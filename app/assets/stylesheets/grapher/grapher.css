@@ -1,0 +1,59 @@
+.bgLine{
+  stroke-width:1;
+  stroke:gray;
+  opacity:.2;
+}
+
+text{
+  fill:#121212;
+  text-shadow:white 1px 1px;
+  font-family:sans-serif;
+}
+
+.yLabel{
+  text-shadow:white 0px 0px 2px, white 1px 1px, white 2px 2px 3px, white 0px 0px 5px, white 0px 0px 5px;
+}
+
+svg:hover .labelGroup{
+  opacity:100;
+}
+
+svg:hover .grapherLargeCircle{
+  opacity:100;
+}
+
+path{
+  stroke:steelblue;
+  fill:none;
+  stroke-width:2px;
+}
+
+line{
+  stroke:gray;
+  fill:none;
+  stroke-width:2px;
+}
+
+text{
+  font-size:12px;
+}
+
+circle{
+  fill:steelblue;
+}
+
+.labelGroup .shadow{
+  fill:black;
+  opacity:.1;
+}
+.labelGroup .labelBox{
+  fill:white;
+  stroke-width:1px;
+  stroke:gray;
+}
+.labelGroup text{
+  fill:black;
+  font-weight:bold;
+}
+
+
