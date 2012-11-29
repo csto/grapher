@@ -3,11 +3,13 @@
 
 var Graph = {};
 
-Graph.LineGraph = function(div, data, id) {
-  this.div = "." + div;
+Graph.LineGraph = function(data, labels, options) {
+  this.options = options
+  this.div = "." + this.options.class;
 
   this.data = data;
-  this.labelHeight = data.length * 20 + 20;
+  this.labels = labels;
+  this.labelHeight = data.length * 18 + 22;
   this.labelWidth = 160;
 
   this.colors = d3.scale.category10();
@@ -20,10 +22,7 @@ Graph.LineGraph = function(div, data, id) {
   }
   this.margin = 30;
 
-  this.spark = false;
-  if(this.w < 300 || this.h < 50){
-    this.spark = true;
-  }
+  this.spark = (this.w < 300 || this.h < 50) ? true : false;
 
   this.maxY = 0;
   for(var i=0; i<this.data.length; i++){
@@ -37,18 +36,18 @@ Graph.LineGraph = function(div, data, id) {
   this.maxDate = new Date(this.data[0][this.data[0].length-1].x)
   this.timeDiff = (this.maxDate - this.minDate) /1000;
 
-  this.strf = "%I:%m %p";
-  this.strfLabel = "%b %d, %Y"
+  this.strf = "%I:%M %p";
+  this.strfLabel = "%b %d, %I:%M %p"
   if(this.timeDiff > 100000){
     this.strf = "%b %d";
-    this.strfLabel = "%b %d, %I:%m %p"
+    this.strfLabel = "%b %d, %Y"
   }
   if(this.timeDiff > 10000000){
     this.strf = "%b %Y";
   }
 
   this.y = d3.scale.linear().domain([0, this.maxY]).range([0, this.h - (this.spark ? 0 : this.margin) -10]);
-  this.x = d3.scale.linear().domain([this.minDate, this.maxDate]).range([0, this.w]);
+  this.x = d3.time.scale().domain([this.minDate, this.maxDate]).range([0, this.w]);
   this.realx = d3.scale.linear().domain([0,this.data[0].length]).range([0,this.w]);
 
   var self = this;
@@ -64,7 +63,7 @@ Graph.LineGraph = function(div, data, id) {
 
   if(!self.spark){
     g.selectAll(".bgLine")
-      .data(self.y.ticks(4))
+      .data(self.y.ticks(self.options.yinterval || 4))
       .enter()
       .append("svg:line")
       .attr("class", "bgLine")
@@ -74,7 +73,7 @@ Graph.LineGraph = function(div, data, id) {
       .attr("x2", self.w);
   }
 
-  var line = d3.svg.line().interpolate("linear")
+  var line = d3.svg.line().interpolate(self.options.interpolate || "linear")
       .x(function(d,i) { return self.x(new Date(d.x)); })
       .y(function(d) { return -self.y(d.y); });
 
@@ -83,16 +82,6 @@ Graph.LineGraph = function(div, data, id) {
       .attr("d", line(data[i]))
       .attr("class", "line-" + i)
       .attr("style", "stroke:" + this.colors(i));
-    if(data[i].length < 50){
-      for(var j=0; j<data[i].length; j++){
-        g.append("circle")
-          .attr("class", "grapher-circle grapher-circle-" + j)
-          .attr("cx", self.x(new Date(data[i][j].x)))
-          .attr("cy", -self.y(data[i][j].y))
-          .attr("r", 3)
-          .attr("style", "fill:" + this.colors(i));;
-      }
-    }
   }
 
   if(!self.spark){
@@ -107,17 +96,17 @@ Graph.LineGraph = function(div, data, id) {
       .attr("class", "axis");
 
     axisGroup.selectAll(".xLabel")
-      .data(self.x.ticks(3))
+      .data(self.x.ticks(self.options.xinterval || 3))
       .enter()
       .append("svg:text")
       .attr("class", "xLabel")
       .text(function(d) { return new Date(d).strftime(self.strf) })
-      .attr("x", function(d) { return self.x(d)})
+      .attr("x", function(d) { return self.x(new Date(d))})
       .attr("y", 18)
       .attr("text-anchor", "middle");
 
     axisGroup.selectAll(".yLabel")
-      .data(self.y.ticks(4))
+      .data(self.y.ticks(self.options.yinterval || 4))
       .enter()
       .append("svg:text")
       .attr("class", "yLabel")
@@ -127,17 +116,17 @@ Graph.LineGraph = function(div, data, id) {
       .attr("dy", 14)
 
     axisGroup.selectAll(".xTicks")
-      .data(self.x.ticks(3))
+      .data(self.x.ticks(self.options.xinterval || 3))
       .enter()
       .append("svg:line")
       .attr("class", "xTicks")
-      .attr("x1", function(d) { return self.x(d); })
+      .attr("x1", function(d) { return self.x(new Date(d)); })
       .attr("y1", 0)
-      .attr("x2", function(d) { return self.x(d); })
+      .attr("x2", function(d) { return self.x(new Date(d)); })
       .attr("y2", 5)
 
     axisGroup.selectAll(".yTicks")
-      .data(self.y.ticks(4))
+      .data(self.y.ticks(self.options.yinterval || 4))
       .enter()
       .append("svg:line")
       .attr("class", "yTicks")
@@ -145,16 +134,6 @@ Graph.LineGraph = function(div, data, id) {
       .attr("x1", -5)
       .attr("y2", function(d) { return -self.y(d); })
       .attr("x2", 0)
-
-    axisGroup.selectAll(".bgLine")
-      .data(self.y.ticks(4))
-      .enter()
-      .append("svg:line")
-      .attr("class", "bgLine")
-      .attr("y1", function(d) { return -self.y(d); })
-      .attr("x1", 0)
-      .attr("y2", function(d) { return -self.y(d); })
-      .attr("x2", self.w);
 
     g.append("rect")
       .attr("x", 0)
@@ -195,24 +174,24 @@ Graph.LineGraph = function(div, data, id) {
       .attr("ry", 2);
 
     labelGroup.append("text")
-      .attr("class", "grapher-time")
-      .attr("x", 5)
-      .attr("y", 15);
+      .attr("class", "grapherTime")
+      .attr("x", 8)
+      .attr("y", 17);
 
     for(var i=0; i<self.data.length; i++){
       labelGroup.append("rect")
-        .attr("class", "grapher-label-" + i)
-        .attr("x", 5)
-        .attr("y", (i+1) * 20 + 8)
+        .attr("class", "grapherLabel-" + i)
+        .attr("x", 8)
+        .attr("y", (i+1) * 18 + 8)
         .attr("width", 5)
         .attr("height", 5)
         .attr("style", "fill:" + self.colors(i))
       labelGroup.append("text")
-        .attr("class", "grapher-text-" + i)
-        .attr("x", 13)
-        .attr("y", (i+1) * 20 + 15);
+        .attr("class", "grapherText-" + i)
+        .attr("x", 16)
+        .attr("y", (i+1) * 18 + 15);
       g.append("circle")
-        .attr("class", "grapher-large-circle grapher-circle-" + i)
+        .attr("class", "grapherLargeCircle grapherLargeCircle-" + i)
         .attr("r", 5)
         .attr("opacity", 0);
     }
@@ -230,15 +209,15 @@ Graph.LineGraph = function(div, data, id) {
               .attr("transform", "translate(" + self.dataX(self.x(new Date(data[0][i].x))) + "," + -self.dataY(self.y(self.data[0][i].y)) +")")
 
             for(var k=0; k<self.data.length; k++){
-              d3.selectAll(self.div + " .grapher-time")
+              d3.selectAll(self.div + " .grapherTime")
                 .text(new Date(self.data[k][i].x).strftime(self.strfLabel))
-              d3.selectAll(self.div + " .grapher-text-" + k)
-                .text("Value: " + self.data[k][i].y)
-              d3.selectAll(self.div + " .grapher-circle-" + k)
+              d3.selectAll(self.div + " .grapherText-" + k)
+                .text(self.labels[k] + ": " + self.data[k][i].y)
+              d3.selectAll(self.div + " .grapherLargeCircle-" + k)
                 .attr("r", 5)
                 .attr("cx", self.x(new Date(self.data[k][i].x)))
                 .attr("cy", -self.y(self.data[k][i].y))
-                .attr("style", "fill:" + self.colors(k));;
+                .attr("style", "fill:" + self.colors(k));
             }
           }
         }
