@@ -22,6 +22,8 @@ In your application.js file:
 
   //= require grapher/grapher
 
+* grapher.js will also include d3.v2.js.
+
 In your application.css file:
 
   //= require grapher/grapher
@@ -43,21 +45,21 @@ Choose whether you want the graph to sort by "month", "day" or "hour".
 Line takes any active model relation.
 
   <%= graph("day") do |g| %>
-    <% g.line(User.where(:registered => true)) %>
+    <% g.line(User.where(registered: true)) %>
   <% end %>
 
 You can have multiple lines per graph.
 
   <%= graph("day") do |g| %>
-    <% g.line(User.where(:registered => true)) %>
-    <% g.line(User.where(:registered => false)) %>
+    <% g.line(User.where(registered: true)) %>
+    <% g.line(User.where(registered: false)) %>
   <% end %>
 
 === Line Options
 
 By default, all relations are grouped by :created_at.  Use :column to change what the relation is grouped by.  This column must be a date field since it is grouping by time periods.
 
-  <% g.line(User, :column => "logged_in_at") %>
+  <% g.line(User, column: "logged_in_at") %>
 
 Pass in a bock to do a more advanced sort on the model.
 
@@ -69,21 +71,21 @@ or
 
 Use :label to change the interactive label when you hover.
 
-  <% g.line(User, :column => "logged_in_at", :label => "Amount") %>
+  <% g.line(User, column: "logged_in_at", label: "Amount") %>
 
 === Graph Options
 
 Changing class:
 
-  <%= graph("day", :class => "user-graph") do |g| %>
+  <%= graph("day", class: "user-graph") do |g| %>
 
 Use :xinterval and :yinterval to change how many labels show up on the axis.  They default to around 4 and might fluctuate a bit depending on your data.
 
-  <%= graph("day", :xinterval => "10", :yinterval => 20) do |g| %>
+  <%= graph("day", xinterval: "10", yinterval: 20) do |g| %>
 
 By default, the line is interpolated as linear.  You can change the interpolation method to a curved line or many other styles.  The styles can be found here:  https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-line_interpolate
 
-  <%= graph("day", :interpolate => "cardinal") do |g| %>
+  <%= graph("day", interpolate: "cardinal") do |g| %>
 
 === Styling the Graph
 
