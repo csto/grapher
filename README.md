@@ -20,18 +20,62 @@ Or install it yourself with:
 
 == Assets
 
+In your application.js file:
+
+  //= require grapher/grapher
+
 In your application.css file:
 
   //= require grapher/grapher
 
 == Basic Usage
 
+Add this helper method to any view.  It will output a time graph of the Model's created at by day.
 
-```html
   <%= graph("day") do |g| %>
     <% g.line(Model) %>
   <% end %>
-```
+
+Line takes any active model relation.
+
+	<%= graph("day") do |g| %>
+    <% g.line(User.where(:registered => true)) %>
+  <% end %>
+
+You can have multiple lines per graph.
+
+	<%= graph("day") do |g| %>
+    <% g.line(User.where(:registered => true)) %>
+		<% g.line(User.where(:registered => false)) %>
+  <% end %>
+
+The first param can be "month", "day" or "hour".
+
+	<%= graph("hour") do |g| %>
+    <% g.line(User) %>
+  <% end %>
+
+or
+
+	<%= graph("day") do |g| %>
+    <% g.line(User) %>
+  <% end %>
+
+or
+
+	<%= graph("month") do |g| %>
+	  <% g.line(User) %>
+	<% end %>
+
+== Line Options
+
+	<%= graph("month") do |g| %>
+    <% g.line(User){|r| r.average} %>
+  <% end %>
+
+== Graph Options
+
+
 
 == Styling the Graph
 
