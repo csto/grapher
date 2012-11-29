@@ -27,9 +27,13 @@ In your application.css file:
 == Basic Usage
 
 ```ruby
-<%= graph("day") do |g| %>
-  <% g.line(Model) %>
-<% end %>
+gem 'devise'
+```
+
+```ruby
+  <%= graph("day") do |g| %>
+    <% g.line(Model) %>
+  <% end %>
 ```
 
 == Styling the Graph
