@@ -1,10 +1,8 @@
 = Grapher
 
-Grapher creates interactive time graphs simply by passing in Active Record Relations to a helper method.
+Grapher creates interactive time graphs simply by passing in Active Record Relations to a helper method.  There is no more need to take the time to format your data before passing it in to a helper.  Just pass the relation in and this Grapher will do the work for you.  Grapher uses SVG to display it's graphs.  All modern browsers support SVG, but not all browsers (IE8 or less).
 
-== Installation
-
-=== Rails 3
+=== Installation
 
 You can let bundler install Grapher by adding this line to your application's Gemfile:
 
@@ -18,7 +16,7 @@ Or install it yourself with:
 
   gem install grapher
 
-== Assets
+=== Assets
 
 In your application.js file:
 
@@ -28,11 +26,11 @@ In your application.css file:
 
   //= require grapher/grapher
 
-== Basic Usage
+=== Basic Usage
 
-Add this helper method to any view.  It will output a time graph of the Model's created at by day.
+Add this helper method to any view to create a quick time graph.
 
-  <%= graph("day") do |g| %>
+  <%= graph("month") do |g| %>
     <% g.line(Model) %>
   <% end %>
 
@@ -55,7 +53,7 @@ You can have multiple lines per graph.
     <% g.line(User.where(:registered => false)) %>
   <% end %>
 
-== Line Options
+=== Line Options
 
 By default, all relations are grouped by :created_at.  Use :column to change what the relation is grouped by.  This column must be a date field since it is grouping by time periods.
 
@@ -73,36 +71,32 @@ Use :label to change the interactive label when you hover.
 
   <% g.line(User, :column => "logged_in_at", :label => "Amount") %>
 
-== Graph Options
+=== Graph Options
+
+Changing class:
+
+  <%= graph("day", :class => "user-graph") do |g| %>
+
+Use :xinterval and :yinterval to change how many labels show up on the axis.  They default to around 4 and might fluctuate a bit depending on your data.
+
+  <%= graph("day", :xinterval => "10", :yinterval => 20) do |g| %>
+
+By default, the line is interpolated as linear.  You can change the interpolation method to a curved line or many other styles.  The styles can be found here:  https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-line_interpolate
+
+  <%= graph("day", :interpolate => "cardinal") do |g| %>
+
+=== Styling the Graph
+
+You can style any element of the graph with CSS.  The color of the lines and colored line elements will have to be overridden with !important.
+
+  .line-0{color: #435581 !important}
+
+The graph will default to the size of it's parent div.  Add a parent div around it and set it's width and height to guarantee the size of the graph.  If no height is given, the graph's height will default to 1/3 the width.
+
+  <div style='width:300px; height:150px;
+    <%= graph("month") do |g| %>
+      <% g.line(Model) %>
+    <% end %>
+  </div>
 
 
-
-== Styling the Graph
-
-Change the color
-
-.line-0{
-  stroke:red !important;
-}
-.grapher-circle-0, .grapher-label-0{
-  fill:red !important;
-}
-
-graph options
-  - time > "hour", "day", "month" *required
-  - options
-    - class
-    - xinterval
-    - yinterval
-    - interpolate "linear" https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-line_interpolate
-
-  - line
-    - Relation
-    - options
-      - column
-      - label
-
-<%= graph("day") do |g| %>
-	<% g.line(User) %>
-	<% g.line(User){|r| r.average(:value)} %>
-<% end %>
