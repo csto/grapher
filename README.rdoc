@@ -1,6 +1,6 @@
 = Grapher
 
-Grapher uses one view helper to create time graphs using Active Model Relations.
+Grapher creates interactive time graphs simply by passing in Active Record Relations to a helper method.
 
 == Installation
 
@@ -19,6 +19,10 @@ Or install it yourself with:
   gem install grapher
 
 == Basic Usage
+
+    <%= graph("day") do |g| %>
+    	<% g.line(User, :column => :created_at, :label => "Update") %>
+    <% end %>
 
 == Styling the Graph
 
