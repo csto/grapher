@@ -30,6 +30,7 @@ In your application.css file:
   <%= graph("day") do |g| %>
     <% g.line(Model) %>
   <% end %>
+```
 
 == Styling the Graph
 
