@@ -26,10 +26,10 @@ In your application.css file:
 
 == Basic Usage
 
-```html
-  <%= graph("day") do |g| %>
-    <% g.line(Model) %>
-  <% end %>
+```ruby
+<%= graph("day") do |g| %>
+  <% g.line(Model) %>
+<% end %>
 ```
 
 == Styling the Graph
