@@ -18,10 +18,17 @@ Or install it yourself with:
 
   gem install grapher
 
+== Assets
+
+In your application.css file:
+
+  //= require grapher/grapher
+
 == Basic Usage
 
+```html
   <%= graph("day") do |g| %>
-    <% g.line(User, :column => :created_at, :label => "Update") %>
+    <% g.line(Model) %>
   <% end %>
 
 == Styling the Graph
