@@ -51,7 +51,7 @@ You can have multiple lines per graph.
 
 The first param can be "month", "day" or "hour".
 
-	<%= graph("hour") do |g| %>
+  <%= graph("hour") do |g| %>
     <% g.line(User) %>
   <% end %>
 
