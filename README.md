@@ -27,7 +27,7 @@ In your application.css file:
 == Basic Usage
 
 
-```ruby
+```html
   <%= graph("day") do |g| %>
     <% g.line(Model) %>
   <% end %>
