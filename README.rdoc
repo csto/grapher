@@ -21,7 +21,7 @@ Or install it yourself with:
 == Basic Usage
 
   <%= graph("day") do |g| %>
-  	<% g.line(User, :column => :created_at, :label => "Update") %>
+  <% g.line(User, :column => :created_at, :label => "Update") %>
   <% end %>
 
 == Styling the Graph
