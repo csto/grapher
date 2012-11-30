@@ -7,11 +7,11 @@ require "grapher/version"
 Gem::Specification.new do |s|
   s.name        = "grapher"
   s.version     = Grapher::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Grapher."
-  s.description = "TODO: Description of Grapher."
+  s.authors     = ["Csto"]
+  s.email       = ["coreystout@hotmail.com"]
+  s.homepage    = ""
+  s.summary     = "Simple graphing for rails."
+  s.description = "Grapher creates interactive time graphs simply by passing in Active Record Relations to a helper method."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]

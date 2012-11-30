@@ -6,21 +6,29 @@ module Grapher
     def initialize(time_units, options, block)
       @time_units = time_units
       @options = options
+      @driver = ActiveRecord::Base.connection.instance_values["config"][:adapter]
 
-      @strf = "%Y-%m-%d"
-      if @time_units.downcase == "hour"
-        @strf = "%Y-%m-%d %H:00"
-      elsif @time_units.downcase == "day"
+      if @driver =~ /postgre/
+        @strf = "YYYY-MM-DD"
+        if @time_units.downcase == "hour"
+          @strf = "%Y-%m-%d %H:00"
+        elsif @time_units.downcase == "month"
+          @strf = "YYYY-MM-1"
+        end
+      else
         @strf = "%Y-%m-%d"
-      elsif @time_units.downcase == "month"
-        @strf = "%Y-%m-1"
+        if @time_units.downcase == "hour"
+          @strf = "%Y-%m-%d %H:00"
+        elsif @time_units.downcase == "month"
+          @strf = "%Y-%m-1"
+        end
       end
 
       block.call(self)
     end
 
     def line(relation, options={})
-      driver = ActiveRecord::Base.connection.instance_values["config"][:adapter]
+
 
       @data ||= []
       @labels ||= []
@@ -28,11 +36,11 @@ module Grapher
       label = options[:label] || "Value"
       @labels << label
 
-      if driver =~ /mysql/
+      if @driver =~ /mysql/
         relation = relation.group("DATE_FORMAT(#{@column}, '#{@strf}')")
-      elsif driver =~ /postgre/
-        relation = relation.group("DATE_FORMAT(#{@column}, '#{@strf}')")
-      elsif driver =~ /sqlite/
+      elsif @driver =~ /postgre/
+        relation = relation.group("to_char(#{@column}, '#{@strf}')")
+      elsif @driver =~ /sqlite/
         relation = relation.group("STRFTIME('#{@strf}', #{@column})")
       end
 
