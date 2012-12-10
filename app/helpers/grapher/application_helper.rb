@@ -11,7 +11,7 @@ module Grapher
       if @driver =~ /postgre/
         @strf = "YYYY-MM-DD"
         if @time_units.downcase == "hour"
-          @strf = "%Y-%m-%d %H:00"
+          @strf = "YYYY-MM-DD HH24:00"
         elsif @time_units.downcase == "month"
           @strf = "YYYY-MM-1"
         end
